@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Vocabulary Study</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: white;
+            font-family: Georgia, 'Times New Roman', serif;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #1a1a1a;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .content-box {
+            border: 2px solid #1a1a1a;
+            padding: 3rem;
+            min-height: 400px;
+        }
+
+        .word-counter {
+            text-align: center;
+            color: #666;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .word-display {
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .english-word {
+            font-size: 3rem;
+            color: #1a1a1a;
+            margin-bottom: 1.5rem;
+        }
+
+        .korean-word {
+            font-size: 2rem;
+            color: #555;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: 2px solid #1a1a1a;
+            background: white;
+            color: #1a1a1a;
+            cursor: pointer;
+            font-family: Georgia, serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .btn:hover:not(:disabled) {
+            background: #f5f5f5;
+        }
+
+        .btn-primary {
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #333;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .info-text {
+            text-align: center;
+            color: #666;
+            font-size: 0.875rem;
+            margin-top: 1rem;
+        }
+
+        .word-puzzle-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .puzzle-question {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .korean-meaning {
+            font-size: 2rem;
+            color: #1a1a1a;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 2px solid #1a1a1a;
+            background: #f9f9f9;
+        }
+
+        .letter-boxes {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .letter-box {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #1a1a1a;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1a1a1a;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .letter-box.filled {
+            background: #e5e5e5;
+        }
+
+        .letter-box.correct {
+            background: #16a34a;
+            color: white;
+            border-color: #16a34a;
+        }
+
+        .letter-box.wrong {
+            background: #dc2626;
+            color: white;
+            border-color: #dc2626;
+            animation: shake 0.3s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .letter-options {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .letter-btn {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #1a1a1a;
+            background: white;
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #1a1a1a;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: Georgia, serif;
+        }
+
+        .letter-btn:hover:not(:disabled) {
+            background: #f5f5f5;
+            transform: translateY(-2px);
+        }
+
+        .letter-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .score {
+            font-size: 1.25rem;
+            color: #1a1a1a;
+        }
+
+        .result-message {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-message.correct {
+            color: #16a34a;
+        }
+
+        .result-message.wrong {
+            color: #dc2626;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>English Vocabulary Study</h1>
+            <p class="subtitle">영단어 학습 웹사이트</p>
+        </header>
+
+
+
+        <div class="content-box">
+            <!-- 영어 단어 암기 탭 -->
+            <div id="vocabulary-tab">
+                <!-- 일반 학습 모드 -->
+                <div id="study-mode">
+                    <div class="word-counter" id="word-counter">1 / 106</div>
+                    <div class="word-display">
+                        <div class="english-word" id="english-word">happy</div>
+                        <div class="korean-word hidden" id="korean-word">행복한</div>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="toggleKorean(this)">뜻 보기</button>
+                        <button class="btn" onclick="startGame()">게임 시작</button>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn" onclick="prevWord()">← 이전</button>
+                        <button class="btn" onclick="nextWord()">다음 →</button>
+                    </div>
+                </div>
+
+                <!-- 게임 모드 -->
+                <div id="game-mode" class="hidden">
+                    <div class="game-header">
+                        <div class="score">점수: <span id="score">0</span> / <span id="total">0</span></div>
+                        <button class="btn" onclick="exitGame()">게임 종료</button>
+                    </div>
+                    
+                    <div class="word-puzzle-container">
+                        <div class="puzzle-question">
+                            <div class="korean-meaning" id="puzzle-korean">행복한</div>
+                            <div class="letter-boxes" id="answer-boxes">
+                                <!-- 정답 칸들이 동적으로 생성됩니다 -->
+                            </div>
+                        </div>
+                        
+                        <div class="letter-options" id="letter-options">
+                            <!-- 글자 옵션들이 동적으로 생성됩니다 -->
+                        </div>
+                        
+                        <div id="puzzle-result" class="hidden">
+                            <div class="result-message" id="puzzle-result-message">정답입니다! 🎉</div>
+                            <div class="button-group">
+                                <button class="btn btn-primary" onclick="nextPuzzle()">다음 문제</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <script>
+        const vocabularyList = [
+            { english: "afraid", korean: "무서운" },
+            { english: "amazed", korean: "놀라운" },
+            { english: "angry", korean: "화난" },
+            { english: "annoyed", korean: "짜증 나는" },
+            { english: "arrogant", korean: "거만한" },
+            { english: "beautiful", korean: "아름다운" },
+            { english: "bland", korean: "싱거운" },
+            { english: "brave", korean: "용감한" },
+            { english: "cautious", korean: "신중한" },
+            { english: "cheap", korean: "싼" },
+            { english: "clever", korean: "영리한" },
+            { english: "cloudy", korean: "흐린" },
+            { english: "cold", korean: "추운" },
+            { english: "confident", korean: "자신 있는" },
+            { english: "considerate", korean: "배려심 있는" },
+            { english: "correct", korean: "맞는" },
+            { english: "cruel", korean: "잔인한" },
+            { english: "curious", korean: "호기심 많은" },
+            { english: "curly", korean: "곱슬한" },
+            { english: "cute", korean: "귀여운" },
+            { english: "danger", korean: "위험한" },
+            { english: "delighted", korean: "기쁜" },
+            { english: "diligent", korean: "부지런한" },
+            { english: "disappointed", korean: "실망한" },
+            { english: "dry", korean: "건조한" },
+            { english: "dusty", korean: "미세먼지가 많은" },
+            { english: "embarrassing", korean: "난처한" },
+            { english: "enough", korean: "충분한" },
+            { english: "excited", korean: "흥분한" },
+            { english: "exhausted", korean: "지친" },
+            { english: "expensive", korean: "비싼" },
+            { english: "extroverted", korean: "외향적인" },
+            { english: "far", korean: "먼" },
+            { english: "foggy", korean: "안개 낀" },
+            { english: "foolish", korean: "어리석은" },
+            { english: "fresh", korean: "신선한" },
+            { english: "full", korean: "배부른" },
+            { english: "fun", korean: "즐거운" },
+            { english: "funny", korean: "웃긴" },
+            { english: "gentle", korean: "온순한" },
+            { english: "handsome", korean: "잘생긴" },
+            { english: "happy", korean: "행복한" },
+            { english: "healthy", korean: "건강한" },
+            { english: "heavy", korean: "무거운" },
+            { english: "high", korean: "높은" },
+            { english: "honest", korean: "정직한" },
+            { english: "hot", korean: "더운" },
+            { english: "humid", korean: "습한" },
+            { english: "humorous", korean: "유머러스한" },
+            { english: "hungry", korean: "배고픈" },
+            { english: "interested", korean: "흥미로운" },
+            { english: "introverted", korean: "내향적인" },
+            { english: "jealous", korean: "질투하는" },
+            { english: "kind", korean: "친절한" },
+            { english: "lazy", korean: "게으른" },
+            { english: "light", korean: "가벼운" },
+            { english: "lonely", korean: "외로운" },
+            { english: "low", korean: "낮은" },
+            { english: "near", korean: "가까운" },
+            { english: "negative", korean: "부정적인" },
+            { english: "new", korean: "새로운" },
+            { english: "oily", korean: "기름진" },
+            { english: "old", korean: "낡은" },
+            { english: "polite", korean: "예의 바른" },
+            { english: "poor", korean: "가난한" },
+            { english: "positive", korean: "긍정적인" },
+            { english: "pretty", korean: "예쁜" },
+            { english: "proud", korean: "자랑스러운" },
+            { english: "quiet", korean: "조용한" },
+            { english: "rainy", korean: "비 오는" },
+            { english: "ready", korean: "준비된" },
+            { english: "rich", korean: "부유한" },
+            { english: "right", korean: "맞는" },
+            { english: "rotten", korean: "썩은" },
+            { english: "rude", korean: "무례한" },
+            { english: "safe", korean: "안전한" },
+            { english: "salty", korean: "짠" },
+            { english: "satisfied", korean: "만족한" },
+            { english: "scared", korean: "겁나는" },
+            { english: "selfish", korean: "이기적인" },
+            { english: "sensitive", korean: "민감한" },
+            { english: "serious", korean: "진지한" },
+            { english: "sharp", korean: "날카로운" },
+            { english: "short", korean: "키가 작은" },
+            { english: "shy", korean: "수줍은" },
+            { english: "sick", korean: "아픈" },
+            { english: "sleepy", korean: "졸린" },
+            { english: "smart", korean: "똑똑한" },
+            { english: "snowy", korean: "눈 오는" },
+            { english: "spicy", korean: "매운" },
+            { english: "straight", korean: "곧은" },
+            { english: "strong", korean: "강한" },
+            { english: "stubborn", korean: "고집 센" },
+            { english: "sunny", korean: "화창한" },
+            { english: "sweet", korean: "달콤한" },
+            { english: "tall", korean: "키가 큰" },
+            { english: "thick", korean: "두꺼운" },
+            { english: "thin", korean: "얇은" },
+            { english: "thirsty", korean: "목마른" },
+            { english: "thoughtful", korean: "사려 깊은" },
+            { english: "tight", korean: "꽉 끼는" },
+            { english: "tired", korean: "피곤한" },
+            { english: "ugly", korean: "못생긴" },
+            { english: "warm", korean: "따뜻한" },
+            { english: "weak", korean: "약한" },
+            { english: "windy", korean: "바람 부는" },
+            { english: "wise", korean: "현명한" },
+            { english: "worried", korean: "걱정하는" },
+            { english: "wrong", korean: "틀린" }
+        ];
+
+        // 상태 변수
+        let currentIndex = 0;
+        let showingKorean = false;
+
+        // 게임 상태
+        let gameMode = false;
+        let currentQuestion = null;
+        let score = 0;
+        let totalQuestions = 0;
+        let selectedAnswer = null;
+
+        // 이스터에그 - 코나미 코드
+        let konamiCode = [];
+        const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let secretClickCount = 0;
+
+        // 탭 전환
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('.tab-btn');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(btn => btn.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+            
+            if (tab === 'vocabulary') {
+                tabs[0].classList.add('active');
+                document.getElementById('vocabulary-tab').classList.add('active');
+            } else {
+                tabs[1].classList.add('active');
+                document.getElementById('timer-tab').classList.add('active');
+            }
+        }
+
+        // 단어 표시 업데이트
+        function updateWordDisplay() {
+            const word = vocabularyList[currentIndex];
+            document.getElementById('english-word').textContent = word.english;
+            document.getElementById('korean-word').textContent = word.korean;
+            document.getElementById('word-counter').textContent = `${currentIndex + 1} / ${vocabularyList.length}`;
+        }
+
+        // 한국어 뜻 토글
+        function toggleKorean(btn) {
+            showingKorean = !showingKorean;
+            const koreanWord = document.getElementById('korean-word');
+            koreanWord.classList.toggle('hidden');
+            btn.textContent = showingKorean ? '뜻 숨기기' : '뜻 보기';
+        }
+
+        // 다음 단어
+        function nextWord() {
+            currentIndex = (currentIndex + 1) % vocabularyList.length;
+            showingKorean = false;
+            document.getElementById('korean-word').classList.add('hidden');
+            updateWordDisplay();
+        }
+
+        // 이전 단어
+        function prevWord() {
+            currentIndex = (currentIndex - 1 + vocabularyList.length) % vocabularyList.length;
+            showingKorean = false;
+            document.getElementById('korean-word').classList.add('hidden');
+            updateWordDisplay();
+        }
+
+        // 게임 시작
+        function startGame() {
+            gameMode = true;
+            score = 0;
+            totalQuestions = 0;
+            document.getElementById('study-mode').classList.add('hidden');
+            document.getElementById('game-mode').classList.remove('hidden');
+            generatePuzzle();
+        }
+
+        // 게임 종료
+        function exitGame() {
+            gameMode = false;
+            document.getElementById('game-mode').classList.add('hidden');
+            document.getElementById('study-mode').classList.remove('hidden');
+        }
+
+        // 퍼즐 생성
+        function generatePuzzle() {
+            const randomIndex = Math.floor(Math.random() * vocabularyList.length);
+            const word = vocabularyList[randomIndex];
+            
+            correctAnswer = word.english;
+            userAnswer = [];
+            
+            // 정답 글자들과 추가 방해 글자들 섞기
+            const wordLetters = correctAnswer.split('');
+            const extraLetters = 'abcdefghijklmnopqrstuvwxyz'.split('')
+                .filter(letter => !wordLetters.includes(letter))
+                .sort(() => Math.random() - 0.5)
+                .slice(0, Math.min(4, 10 - wordLetters.length));
+            
+            availableLetters = [...wordLetters, ...extraLetters].sort(() => Math.random() - 0.5);
+            
+            // UI 업데이트
+            document.getElementById('puzzle-korean').textContent = word.korean;
+            document.getElementById('score').textContent = score;
+            document.getElementById('total').textContent = totalQuestions;
+            document.getElementById('puzzle-result').classList.add('hidden');
+            
+            // 정답 칸 생성
+            const answerBoxes = document.getElementById('answer-boxes');
+            answerBoxes.innerHTML = '';
+            for (let i = 0; i < correctAnswer.length; i++) {
+                const box = document.createElement('div');
+                box.className = 'letter-box';
+                box.dataset.index = i;
+                box.onclick = () => removeLetterFromAnswer(i);
+                answerBoxes.appendChild(box);
+            }
+            
+            // 글자 옵션 생성
+            const letterOptions = document.getElementById('letter-options');
+            letterOptions.innerHTML = '';
+            availableLetters.forEach((letter, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'letter-btn';
+                btn.textContent = letter;
+                btn.dataset.letter = letter;
+                btn.dataset.index = index;
+                btn.onclick = () => selectLetter(letter, index);
+                letterOptions.appendChild(btn);
+            });
+        }
+
+        // 글자 선택
+        function selectLetter(letter, btnIndex) {
+            if (userAnswer.length >= correctAnswer.length) return;
+            
+            // 버튼 비활성화
+            const buttons = document.querySelectorAll('.letter-btn');
+            buttons[btnIndex].disabled = true;
+            
+            // 정답 칸에 글자 추가
+            const boxIndex = userAnswer.length;
+            userAnswer.push(letter);
+            const boxes = document.querySelectorAll('.letter-box');
+            boxes[boxIndex].textContent = letter;
+            boxes[boxIndex].classList.add('filled');
+            
+            // 모든 칸이 채워지면 정답 확인
+            if (userAnswer.length === correctAnswer.length) {
+                checkAnswer();
+            }
+        }
+
+        // 정답 칸에서 글자 제거
+        function removeLetterFromAnswer(boxIndex) {
+            if (!userAnswer[boxIndex]) return;
+            
+            const letter = userAnswer[boxIndex];
+            
+            // 해당 위치 이후의 모든 글자를 한 칸씩 앞으로
+            userAnswer.splice(boxIndex, 1);
+            
+            // UI 업데이트
+            const boxes = document.querySelectorAll('.letter-box');
+            boxes.forEach((box, index) => {
+                if (index < userAnswer.length) {
+                    box.textContent = userAnswer[index];
+                    box.classList.add('filled');
+                } else {
+                    box.textContent = '';
+                    box.classList.remove('filled');
+                }
+            });
+            
+            // 글자 버튼 다시 활성화
+            const buttons = document.querySelectorAll('.letter-btn');
+            let foundDisabled = false;
+            buttons.forEach(btn => {
+                if (btn.textContent === letter && btn.disabled && !foundDisabled) {
+                    btn.disabled = false;
+                    foundDisabled = true;
+                }
+            });
+        }
+
+        // 정답 확인
+        function checkAnswer() {
+            totalQuestions++;
+            const userWord = userAnswer.join('');
+            const isCorrect = userWord === correctAnswer;
+            
+            if (isCorrect) {
+                score++;
+            }
+            
+            // 정답 칸 색상 변경
+            const boxes = document.querySelectorAll('.letter-box');
+            boxes.forEach(box => {
+                box.classList.add(isCorrect ? 'correct' : 'wrong');
+                box.onclick = null;
+            });
+            
+            // 모든 버튼 비활성화
+            const buttons = document.querySelectorAll('.letter-btn');
+            buttons.forEach(btn => btn.disabled = true);
+            
+            // 결과 메시지 표시
+            const resultSection = document.getElementById('puzzle-result');
+            const resultMessage = document.getElementById('puzzle-result-message');
+            
+            if (isCorrect) {
+                resultMessage.textContent = '정답입니다! 🎉';
+                resultMessage.className = 'result-message correct';
+            } else {
+                resultMessage.textContent = `틀렸습니다. 정답: ${correctAnswer}`;
+                resultMessage.className = 'result-message wrong';
+            }
+            
+            resultSection.classList.remove('hidden');
+            
+            // 점수 업데이트
+            document.getElementById('score').textContent = score;
+            document.getElementById('total').textContent = totalQuestions;
+        }
+
+        // 다음 퍼즐
+        function nextPuzzle() {
+            generatePuzzle();
+        }
+
+        // 초기화
+        updateWordDisplay();
+    </script>
+</body>
+</html>
